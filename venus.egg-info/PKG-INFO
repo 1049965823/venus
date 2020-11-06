@@ -1,0 +1,40 @@
+Metadata-Version: 1.1
+Name: venus
+Version: 0.0.1.dev2
+Summary: OpenStack DR Recovery
+Home-page: http://www.hihuron.com/
+Author: ECONE
+Author-email: cloud@hihuron.com
+License: UNKNOWN
+Description: ======
+        VENUS
+        ======
+        
+        You have come across a storage service for an open cloud computing service.
+        It has identified itself as `Venus`. It was abstracted from the Cinder project.
+        
+        * Wiki: https://github.com/hahaps/openstack-project-generator
+        * Developer docs: https://github.com/hahaps/openstack-project-generator
+        
+        Getting Started
+        ---------------
+        
+        If you'd like to run from the master branch, you can clone the git repo:
+        
+            git clone https://github.com/hahaps/openstack-project-generator
+        
+        For developer information please see
+        `HACKING.rst <https://github.com/hahaps/openstack-project-generator>`_
+        
+        You can raise bugs here https://github.com/hahaps/openstack-project-generator
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
