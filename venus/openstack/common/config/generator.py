@@ -27,7 +27,6 @@ import textwrap
 from oslo_config import cfg
 from oslo_utils import importutils
 import six
-import stevedore.named
 
 from venus.openstack.common import gettextutils
 
@@ -96,24 +95,6 @@ def generate(argv):
                 for group, opts in _list_opts(module):
                     opts_by_group.setdefault(group, []).append((module_name,
                                                                 opts))
-
-    # Look for entry points defined in libraries (or applications) for
-    # option discovery, and include their return values in the output.
-    #
-    # Each entry point should be a function returning an iterable
-    # of pairs with the group name (or None for the default group)
-    # and the list of Opt instances for that group.
-    if parsed_args.libraries:
-        loader = stevedore.named.NamedExtensionManager(
-            'oslo.config.opts',
-            names=list(set(parsed_args.libraries)),
-            invoke_on_load=False,
-            on_load_failure_callback=raise_extension_exception
-        )
-        for ext in loader:
-            for group, opts in ext.plugin():
-                opt_list = opts_by_group.setdefault(group or 'DEFAULT', [])
-                opt_list.append((ext.name, opts))
 
     for pkg_name in pkg_names:
         mods = mods_by_pkg.get(pkg_name)
@@ -299,6 +280,7 @@ def _print_opt(opt):
 
 def main():
     generate(sys.argv[1:])
+
 
 if __name__ == '__main__':
     main()

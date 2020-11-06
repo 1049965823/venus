@@ -12,9 +12,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import re
-from oslo_log import log as logging
 import paste.urlmap
+import re
+
+from oslo_log import log as logging
 
 try:
     from urllib.request import parse_http_list   # pylint: disable=E0611

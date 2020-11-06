@@ -13,8 +13,10 @@
 # under the License.
 
 import os
-from venus.db.sqlalchemy import migrate_repo
+
 from migrate.versioning.shell import main
+
+from venus.db.sqlalchemy import migrate_repo
 
 
 if __name__ == '__main__':

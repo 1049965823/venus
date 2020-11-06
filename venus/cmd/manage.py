@@ -17,21 +17,24 @@
 """
 
 from __future__ import print_function
+
+import os
+import sys
+
 from oslo_config import cfg
 from oslo_db.sqlalchemy import migration
 from oslo_log import log as logging
+
 from venus.common import config  # noqa
 from venus import context
 from venus import db
 from venus.db import migration as db_migration
 from venus.db.sqlalchemy import api as db_api
+from venus import i18n
 from venus.i18n import _
 from venus import objects
-from venus import version
-from venus import i18n
 from venus.task import timer
-import os
-import sys
+from venus import version
 
 i18n.enable_lazy()
 

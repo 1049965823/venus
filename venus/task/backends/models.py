@@ -21,7 +21,7 @@ from oslo_db.sqlalchemy import models
 from oslo_utils import timeutils
 from sqlalchemy import Column
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import DateTime, String, Text, Integer, Float, BigInteger
+from sqlalchemy import DateTime, String
 CONF = cfg.CONF
 BASE = declarative_base()
 
@@ -61,6 +61,7 @@ def register_models():
     engine = create_engine(CONF.database.connection, echo=False)
     for model in models:
         model.metadata.create_all(engine)
+
 
 class RegitsterTask(BASE, VenusBase):
     __tablename__ = 't_mo_regitster_task'

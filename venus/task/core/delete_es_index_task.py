@@ -15,12 +15,14 @@
 import datetime
 import six
 import time
+
 from oslo_config import cfg
 from oslo_log import log as logging
-from venus.modules.custom_config.backends.sql import CustomConfigSql
-from venus.task.backends.sql import TaskSql
-from venus.i18n import _LE, _LI
+
 from venus.common import utils
+from venus.modules.custom_config.backends.sql import CustomConfigSql
+from venus.i18n import _LE, _LI
+from venus.task.backends.sql import TaskSql
 
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__)

@@ -87,13 +87,11 @@ class SearchController(wsgi.Controller):
         text = self.search_api.instance_call_chain(request_id, uuid)
         return text
 
-
     @wsgi.wrap_check_policy
     def search_global_id(self, req):
         global_id = req.params.get("global_id", None)
         text = self.search_lib.get_global_log(global_id)
         return text
-
 
 
 def create_resource(ext_mgr):

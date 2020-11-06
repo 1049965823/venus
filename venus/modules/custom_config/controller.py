@@ -20,8 +20,6 @@ from venus.api.openstack import wsgi
 
 from venus.modules.custom_config.action import CustomConfigCore
 
-from venus import exception
-
 LOG = logging.getLogger(__name__)
 
 

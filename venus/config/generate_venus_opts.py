@@ -26,11 +26,10 @@ if __name__ == "__main__":
     targetdir = os.environ['TARGETDIR']
     basedir = os.environ['BASEDIRESC']
 
-    common_string = ('find ' + targetdir + ' -type f -name "*.py" !  '
-                                           '-path "*/tests/*" -exec '
-                                           'grep -l "%s" {} '
-                                           '+  | sed -e "s/^' + basedir +
-                     '\///g" | sort -u')
+    common_string = ("find " + targetdir +
+                     " -type f -name '*.py' ! -path '*/tests/*' -exec " +
+                     "grep -l '%s' {} | sed -e 's/^" + basedir +
+                     "\///g' | sort -u")
 
     cmd_opts = common_string % "CONF.register_opts("
     output_opts = subprocess.check_output('{}'.format(cmd_opts), shell=True)

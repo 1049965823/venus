@@ -12,10 +12,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import datetime
 import unittest
 
 from venus.modules.search.action import SearchCore
+
 
 class TestSearchAction(unittest.TestCase):
     def test_get_interval(self):
@@ -67,7 +67,6 @@ class TestSearchAction(unittest.TestCase):
         self.assertEqual(want2, res2)
         self.assertEqual(want3, res3)
 
-
         want1 = "30m"
         want2 = "30分钟"
         want3 = "30minutes"
@@ -95,7 +94,6 @@ class TestSearchAction(unittest.TestCase):
         self.assertEqual(want2, res2)
         self.assertEqual(want3, res3)
 
-
         want1 = "6h"
         want2 = "6小时"
         want3 = "6hours"
@@ -122,6 +120,7 @@ class TestSearchAction(unittest.TestCase):
         self.assertEqual(want1, res1)
         self.assertEqual(want2, res2)
         self.assertEqual(want3, res3)
+
 
 if __name__ == "__main__":
     unittest.main()

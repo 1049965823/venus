@@ -12,23 +12,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
 """Implementation of SQLAlchemy backend."""
-import datetime
-import socket
+
 import sqlalchemy
 import sys
 import threading
-import time
-import uuid
 import warnings
+
 from oslo_config import cfg
 from oslo_db import options
 from oslo_db.sqlalchemy import session as db_session
 from oslo_log import log as logging
 import osprofiler.sqlalchemy
+
 from venus import exception
-from venus.i18n import _, _LE
+from venus.i18n import _
 
 CONF = cfg.CONF
 CONF.import_group("profiler", "venus.service")
