@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+
 from datetime import datetime
 from elasticsearch import Elasticsearch
 import re
@@ -116,18 +117,18 @@ class ESSearchObj(object):
 
         data = {}
         for log in log_list:
-            if log["Logger"] in data):
+            if log["Logger"] in data:
                 pass
             else:
                 data[log["Logger"]] = {}
 
         for log in log_list:
-            if log["programname"] not in data[log["Logger"]]):
+            if log["programname"] not in data[log["Logger"]]:
                 data[log["Logger"]][log["programname"]] = {}
                 # log content
                 data[log["Logger"]][log["programname"]]["log_list"] = []
                 data[log["Logger"]][log["programname"]]["log_list"].append(
-                        log)
+                    log)
                 # log host
                 data[log["Logger"]][log["programname"]]["host"] = []
 
@@ -156,10 +157,10 @@ class ESSearchObj(object):
                         "host"].append(log["Hostname"])
 
                 data[log["Logger"]][
-                        log["programname"]]["end_time"] = log["timeutc"]
+                    log["programname"]]["end_time"] = log["timeutc"]
 
                 data[log["Logger"]][log["programname"]]["log_total"] = data[
-                        log["Logger"]][log["programname"]]["log_total"] + 1
+                    log["Logger"]][log["programname"]]["log_total"] + 1
 
                 if self.get_log_level(log["log_level"]) > 0:
                     data[log["Logger"]][log["programname"]][

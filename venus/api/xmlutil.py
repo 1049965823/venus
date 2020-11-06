@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import operator
 import os.path
 import re
 
@@ -396,7 +397,7 @@ class TemplateElement(object):
                 tmpInsertPos = parent.find(tagnameList[i])
                 if tmpInsertPos is None:
                     break
-                elif not cmp(parent.attrib, tmpattrib) == 0:
+                elif not operator.eq(parent.attrib, tmpattrib):
                     break
                 parent = tmpInsertPos
                 insertIndex = i + 1
@@ -944,10 +945,8 @@ def make_flat_dict(name, selector=None, subselector=None, ns=None):
     # Set up the names we need...
     if ns is None:
         elemname = name
-        tagname = Selector(0)
     else:
         elemname = '{%s}%s' % (ns, name)
-        tagname = lambda obj, do_raise=False: '{%s}%s' % (ns, obj[0])
 
     if selector is None:
         selector = name
@@ -955,10 +954,6 @@ def make_flat_dict(name, selector=None, subselector=None, ns=None):
     # Build the root element
     root = TemplateElement(elemname, selector=selector,
                            subselector=subselector)
-
-    # Build an element to represent all the keys and values
-    elem = SubTemplateElement(root, tagname, selector=get_items)
-    elem.text = 1
 
     # Return the template
     return root
