@@ -14,17 +14,18 @@
 
 """Implementation of SQLAlchemy backend."""
 
-import sqlalchemy
-import socket
-import threading
-import time
 from oslo_config import cfg
 from oslo_db import options
 from oslo_db.sqlalchemy import session as db_session
 from oslo_log import log as logging
 import osprofiler.sqlalchemy
+import socket
+import sqlalchemy
+import threading
+import time
+
+from venus.i18n import _LE
 from venus.task.backends import models
-from venus.i18n import _, _LE
 
 CONF = cfg.CONF
 CONF.import_group("profiler", "venus.service")
@@ -69,7 +70,8 @@ class TaskSql(object):
             tasks = session.query(models.RegitsterTask).filter_by(
                 task_name=t_name).with_lockmode('update').all()
             if len(tasks) != 1:
-                log.error(_LE("unsuported task type:%s, please check it"), t_name)
+                log.error(_LE("unsuported task type:%s, please check it"),
+                          t_name)
                 return False
 
             if tasks[0].update_time is None or (now - time.mktime(

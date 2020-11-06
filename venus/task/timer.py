@@ -32,6 +32,7 @@ def init_advanced_timer():
     add_jobs()
     sched.start()
 
+
 def add_jobs():
     sched.add_job(adapter.delete_es_index_job, TRIGGER_INTERVAL,
                   hours=1, id='delete_es_index_job')

@@ -12,12 +12,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import socket
+
 from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_utils import netutils
-from venus.i18n import _
-import socket
 
+from venus.i18n import _
 
 CONF = cfg.CONF
 logging.register_options(CONF)

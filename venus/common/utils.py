@@ -15,9 +15,7 @@
 """Implementation of Utils."""
 
 import json
-
 import six
-
 import urllib3
 
 from oslo_log import log as logging
@@ -37,8 +35,9 @@ def request_es(url, method, data=None):
             resp = http.request(method, url=url, body=json.dumps(data))
         else:
             return 0, None
+
         return resp.status, resp.data.strip()
+
     except Exception as e:
-        LOG.error(_LE("request es, catch exception:%s"),
-                    six.text_type(e))
+        LOG.error(_LE("request es, catch exception:%s"), six.text_type(e))
         return 0, None

@@ -12,14 +12,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from elasticsearch import  Elasticsearch
-from oslo_log import log as logging
-from oslo_config import cfg
-import  urlparse
 from datetime import datetime
-import time
+from elasticsearch import Elasticsearch
 import re
+import urlparse
 
+from oslo_config import cfg
+from oslo_log import log as logging
 
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
@@ -47,7 +46,6 @@ CONF.register_group(elasticsearch_group)
 CONF.register_opts(elasticsearch_opts, elasticsearch_group)
 
 
-
 class ESSearchObj(object):
 
     def __init__(self):
@@ -69,7 +67,7 @@ class ESSearchObj(object):
             print(index)
         return indices
 
-    def _create_index(self, index_name ):
+    def _create_index(self, index_name):
 
         all_index = self.get_all_index()
         exist = False
@@ -83,25 +81,25 @@ class ESSearchObj(object):
 
         return result
 
-    def _get_index_info(self,index):
+    def _get_index_info(self, index):
         pass
 
-    def get_global_log(self,global_id):
+    def get_global_log(self, global_id):
         ID_FORMAT = (r'^req-[a-f0-9]{8}-[a-f0-9]{4}-'
                      r'[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
 
         if not re.match(ID_FORMAT, global_id):
-            return {"error":"the request param is not correct"}
+            return {"error": "the request param is not correct"}
 
         doc = {
             "query": {
                 "term": {
-                    "global_id.keyword":global_id
+                    "global_id.keyword": global_id
                 }
             },
             "size": 10000,
         }
-        result = self.es.search(index="flog*",body=doc)
+        result = self.es.search(index="flog*", body=doc)
         log_list = self.parse_result(result)
         self.sort_result_by_time(log_list)
 
@@ -113,28 +111,28 @@ class ESSearchObj(object):
 
         return data
 
-    def analysis_log(self,log_list):
+    def analysis_log(self, log_list):
         # 1 group by model
 
         data = {}
         for log in log_list:
-            if data.has_key(log["Logger"]):
+            if log["Logger"] in data):
                 pass
             else:
                 data[log["Logger"]] = {}
 
         for log in log_list:
-            if not data[log["Logger"]].has_key(log["programname"]):
+            if log["programname"] not in data[log["Logger"]]):
                 data[log["Logger"]][log["programname"]] = {}
                 # log content
                 data[log["Logger"]][log["programname"]]["log_list"] = []
-                data[log["Logger"]][log["programname"]][
-                    "log_list"].append(log)
+                data[log["Logger"]][log["programname"]]["log_list"].append(
+                        log)
                 # log host
                 data[log["Logger"]][log["programname"]]["host"] = []
 
-                if (log["Hostname"]
-                        not in data[log["Logger"]][log["programname"]]["host"]):
+                if (log["Hostname"] not in
+                        data[log["Logger"]][log["programname"]]["host"]):
                     data[log["Logger"]][log["programname"]][
                         "host"].append(log["Hostname"])
 
@@ -152,22 +150,21 @@ class ESSearchObj(object):
                 data[log["Logger"]][log["programname"]][
                     "log_list"].append(log)
 
-                if (log["Hostname"]
-                        not in data[log["Logger"]][log["programname"]]["host"]):
+                if (log["Hostname"] not in
+                        data[log["Logger"]][log["programname"]]["host"]):
                     data[log["Logger"]][log["programname"]][
                         "host"].append(log["Hostname"])
 
-                data[log["Logger"]][log["programname"]][
-                    "end_time"] = log["timeutc"]
+                data[log["Logger"]][
+                        log["programname"]]["end_time"] = log["timeutc"]
 
-                data[log["Logger"]][log["programname"]][
-                    "log_total"] = data[log["Logger"]][log["programname"]][
-                                                       "log_total"] + 1
+                data[log["Logger"]][log["programname"]]["log_total"] = data[
+                        log["Logger"]][log["programname"]]["log_total"] + 1
 
                 if self.get_log_level(log["log_level"]) > 0:
                     data[log["Logger"]][log["programname"]][
-                        "log_error"] = data[log["Logger"]][log["programname"]][
-                                                               "log_error"] + 1
+                        "log_error"] = data[log["Logger"]][
+                            log["programname"]]["log_error"] + 1
 
         return self.sort_deal_data(data)
 
@@ -187,10 +184,10 @@ class ESSearchObj(object):
             LOG.waring("can't find the log level %S", log_level)
             return -1
 
-    def sort_result_by_time(self,log_list):
+    def sort_result_by_time(self, log_list):
         for log in log_list:
             log_time = log["Timestamp"].encode("utf-8")
-            datetime_obj = datetime.strptime(log_time,"%Y-%m-%d %H:%M:%S.%f")
+            datetime_obj = datetime.strptime(log_time, "%Y-%m-%d %H:%M:%S.%f")
             log["timeutc"] = datetime_obj
 
         log_list.sort(key=lambda logcontent: logcontent['timeutc'])
@@ -210,8 +207,8 @@ class ESSearchObj(object):
                 model_list.append(data.get(part).get(model))
                 data[part][model] = None
             model_list.sort(key=lambda model: model['start_time'])
-            data[part]['model_list']=model_list
-            data[part]['start_time']= model_list[0]['start_time']
+            data[part]['model_list'] = model_list
+            data[part]['start_time'] = model_list[0]['start_time']
         new_data = {}
         part_list = []
         for part in data:

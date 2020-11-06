@@ -36,7 +36,8 @@ def search_params(field, must_params):
     return data
 
 
-def search_logs(must_params, must_not_params, start_time, end_time, interval, from_i, size):
+def search_logs(must_params, must_not_params, start_time,
+                end_time, interval, from_i, size):
     data = {
         "aggs": {
             "data_count": {
@@ -97,7 +98,8 @@ def search_analyse_logs(must_params, must_not_params, g_name):
     return data
 
 
-def search_typical_logs(must_params, group_field, start_time, end_time, interval):
+def search_typical_logs(must_params, group_field, start_time,
+                        end_time, interval):
     data = {
         "aggs": {
             "data_group": {

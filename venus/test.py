@@ -25,7 +25,6 @@ import shutil
 import uuid
 
 import fixtures
-import mock
 from oslo_concurrency import lockutils
 from oslo_config import cfg
 from oslo_config import fixture as config_fixture
@@ -36,6 +35,7 @@ from oslo_utils import strutils
 from oslo_utils import timeutils
 from oslotest import moxstubout
 import testtools
+from unittest import mock
 
 from venus.common import config  # noqa Need to register global_opts
 from venus.db import migration
@@ -223,8 +223,7 @@ class TestCase(testtools.TestCase):
         osprofiler should not run for unit tests.
         """
 
-        side_effect = lambda value: value
-        mock_decorator = mock.MagicMock(side_effect=side_effect)
+        mock_decorator = mock.MagicMock(side_effect=lambda value: value)
         p = mock.patch("osprofiler.profiler.trace_cls",
                        return_value=mock_decorator)
         p.start()

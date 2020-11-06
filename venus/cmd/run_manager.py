@@ -14,17 +14,16 @@
 
 """Starter script for Naja Scheduler."""
 
-from oslo_config import cfg
-from oslo_log import log as logging
-from oslo_reports import guru_meditation_report as gmr
-from venus.common import config  # noqa
-from venus import objects
-from venus import service
-from venus import utils
-from venus import version
-from venus import i18n
 import eventlet
 import sys
+
+from oslo_config import cfg
+from oslo_log import log as logging
+
+from venus.common import config  # noqa
+from venus import i18n
+from venus import objects
+from venus import version
 
 i18n.enable_lazy()
 eventlet.monkey_patch()

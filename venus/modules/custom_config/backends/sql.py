@@ -78,7 +78,6 @@ class CustomConfigSql(object):
             else:
                 return config.value
 
-
     def set_config(self, id, value):
         session = get_session()
         with session.begin():

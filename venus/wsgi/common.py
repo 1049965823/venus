@@ -14,13 +14,14 @@
 
 """Utility methods for working with WSGI servers."""
 
-import sys
-from oslo_config import cfg
-from oslo_log import log as logging
 from paste import deploy
 import routes.middleware
+import sys
 import webob.dec
 import webob.exc
+
+from oslo_config import cfg
+from oslo_log import log as logging
 
 from venus import exception
 from venus.i18n import _, _LE

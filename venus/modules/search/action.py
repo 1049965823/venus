@@ -15,6 +15,7 @@
 import datetime
 import json
 import time
+import timeutils
 
 from oslo_config import cfg
 
@@ -134,10 +135,11 @@ class SearchCore(object):
 
         if index_type is None:
             index_type = self.flog_index_prefix
-        if index_type != self.flog_index_prefix and index_type != self.slog_index_prefix:
+        if (index_type != self.flog_index_prefix and
+                index_type != self.slog_index_prefix):
             return {"code": -1, "msg": "invalid param"}
 
-        end_time = datetime.datetime.now()
+        end_time = timeutils.utcnow()
         start_time = end_time - datetime.timedelta(days=7)
         index_prefix = index_type
         index_names = self.get_index_names(index_prefix,
@@ -148,7 +150,7 @@ class SearchCore(object):
         data = es_template.search_params(field, must_params)
 
         values = []
-        status, text =utils.request_es(url, "POST", data)
+        status, text = utils.request_es(url, "POST", data)
         if status != 200:
             return {"code": -1, "msg": "internal error, bad request"}
         res = json.loads(text)
@@ -167,7 +169,7 @@ class SearchCore(object):
                 v = bucket["key"]
                 vu = v.upper()
                 if vu not in values:
-                     values.append(vu)
+                    values.append(vu)
             else:
                 values.append(bucket["key"])
 
@@ -216,12 +218,14 @@ class SearchCore(object):
     def logs(self, host_name, module_name, program_name,
              level, user_id, project_id, query, index_type,
              start_time, end_time, page_num, page_size):
-        if start_time is None or end_time is None or page_num is None or page_size is None:
+        if (start_time is None or end_time is None or
+                page_num is None or page_size is None):
             return {"code": -1, "msg": "invalid param"}
 
         if index_type is None:
             index_type = self.flog_index_prefix
-        if index_type != self.flog_index_prefix and index_type != self.slog_index_prefix:
+        if (index_type != self.flog_index_prefix and
+                index_type != self.slog_index_prefix):
             return {"code": -1, "msg": "invalid param"}
 
         size = int(page_size)
@@ -244,7 +248,7 @@ class SearchCore(object):
                 gen_params["log_level.keyword"] = level
 
         if user_id:
-            gen_params["user_id.keyword"] =  user_id
+            gen_params["user_id.keyword"] = user_id
 
         if project_id:
             gen_params["tenant_id.keyword"] = project_id
@@ -403,7 +407,9 @@ class SearchCore(object):
         if index_names is None:
             return {"code": 0, "msg": "no data, no index"}
         url = self.elasticsearch_url + '/' + index_names + '/_search'
-        data = es_template.search_analyse_logs(must_params, must_not_params, g_name)
+        data = es_template.search_analyse_logs(must_params,
+                                               must_not_params,
+                                               g_name)
 
         status, text = utils.request_es(url, "POST", data)
         if status != 200:
@@ -417,7 +423,7 @@ class SearchCore(object):
             return {"code": 0, "msg": "no data, no count data"}
         buckets = search_values.get("buckets", None)
         if buckets is None:
-             return {"code": 0, "msg": "no data, no buckets"}
+            return {"code": 0, "msg": "no data, no buckets"}
         data_count = buckets
 
         d = {}
@@ -432,22 +438,27 @@ class SearchCore(object):
         if type == "error_stats":
             gen_params["log_level.keyword"] = "ERROR"
             group_name = "programname.keyword"
-            return self. typical_stats(gen_params, group_name, start_time, end_time)
+            return self. typical_stats(
+                gen_params, group_name, start_time, end_time)
         elif type == "rabbitmq_error_stats":
             gen_params["log_level.keyword"] = "ERROR"
-            gen_params["python_module.keyword"] = "oslo.messaging._drivers.impl_rabbit"
+            rabbit_driver = "oslo.messaging._drivers.impl_rabbit"
+            gen_params["python_module.keyword"] = rabbit_driver
             group_name = "programname.keyword"
-            return self. typical_stats(gen_params, group_name, start_time, end_time)
+            return self. typical_stats(
+                gen_params, group_name, start_time, end_time)
         elif type == "mysql_error_stats":
             gen_params["log_level.keyword"] = "ERROR"
             gen_params["python_module.keyword"] = "oslo_db.sqlalchemy.engines"
             group_name = "programname.keyword"
-            return self. typical_stats(gen_params, group_name, start_time, end_time)
+            return self. typical_stats(
+                gen_params, group_name, start_time, end_time)
         elif type == "novalidhost_error_stats":
             gen_params["log_level.keyword"] = "ERROR"
             gen_params["query"] = "No valid host was found"
             group_name = "programname.keyword"
-            return self. typical_stats(gen_params, group_name, start_time, end_time)
+            return self. typical_stats(
+                gen_params, group_name, start_time, end_time)
         else:
             return {"code": -1, "msg": "invalid param"}
 
@@ -469,7 +480,7 @@ class SearchCore(object):
                                            t_start_time, t_end_time)
         if index_names is None:
             return {"code": 0, "msg": "no data, no index"}
-        
+
         interval, interval_cn, interval_en = \
             self.get_interval(int(start_time), int(end_time))
         url = self.elasticsearch_url + '/' + index_names + '/_search'
@@ -547,7 +558,7 @@ class SearchCore(object):
             if _source is not None:
                 hostname = _source.get("Hostname", "")
                 if hostinfos.get(hostname, None) is None:
-                     hostinfos[hostname] = []
+                    hostinfos[hostname] = []
                 info["payload"] = _source.get("Payload", "")
                 info["time"] = _source.get("@timestamp", "")
                 hostinfos[hostname].append(info)
@@ -564,7 +575,8 @@ class SearchCore(object):
                 if "Took" in payload and "seconds to build" in payload:
                     end_time = i.get("time", "")
                     is_success = 1
-                if "Enter inspur build_and_run_instance" in payload and start_time == "":
+                if ("Enter inspur build_and_run_instance" in payload and
+                        start_time == ""):
                     start_time = i.get("time", "")
 
             if is_success == 0 and len(v) > 0:
@@ -601,7 +613,7 @@ class SearchCore(object):
             if _source is not None:
                 hostname = _source.get("Hostname", "")
                 if hostinfos.get(hostname, None) is None:
-                     hostinfos[hostname] = []
+                    hostinfos[hostname] = []
                 info["level"] = _source.get("log_level", "")
                 info["time"] = _source.get("@timestamp", "")
                 hostinfos[hostname].append(info)
@@ -671,7 +683,8 @@ class SearchCore(object):
                 code = -1
 
         # for nova-compute
-        d, r = self.stat_instance_created_compute(request_id, uuid, index_names, start_time, end_time)
+        d, r = self.stat_instance_created_compute(
+            request_id, uuid, index_names, start_time, end_time)
         res["nova-compute"] = d
         if r is not None:
             msg = r

@@ -14,21 +14,22 @@
 
 """Venus OS API WSGI application."""
 
-
 import sys
 import warnings
-from venus import objects
-warnings.simplefilter('once', DeprecationWarning)
+
 from oslo_config import cfg
 from oslo_log import log as logging
-from venus import i18n
-i18n.enable_lazy()
+
 # Need to register global_opts
 from venus.common import config  # noqa
+from venus import i18n
+from venus import objects
 from venus import rpc
 from venus import version
 from venus.wsgi import common as wsgi_common
 
+warnings.simplefilter('once', DeprecationWarning)
+i18n.enable_lazy()
 CONF = cfg.CONF
 
 

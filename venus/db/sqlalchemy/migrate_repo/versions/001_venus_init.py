@@ -77,10 +77,9 @@ def upgrade(migrate_engine):
     }
     maker = sessionmaker(bind=migrate_engine)
     session = maker()
-    t_mo_custom_config= sql.Table('t_mo_custom_config', meta, autoload=True)
+    t_mo_custom_config = sql.Table('t_mo_custom_config', meta, autoload=True)
     row = t_mo_custom_config.insert().values(**new_data)
     session.execute(row)
 
     session.commit()
     session.close()
-

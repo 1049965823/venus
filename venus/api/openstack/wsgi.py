@@ -16,21 +16,23 @@ import functools
 import inspect
 from lxml import etree
 import math
-from oslo_log import log as logging
-from oslo_serialization import jsonutils
-from oslo_utils import excutils
-from venus import exception
-from venus import i18n
-from venus import utils
-from venus.i18n import _, _LE, _LI
-from venus.objects import base as objects_base
-import venus.policy
-from venus.wsgi import common as wsgi
 import six
 import time
 import webob
 from xml.dom import minidom
 from xml.parsers import expat
+
+from oslo_log import log as logging
+from oslo_serialization import jsonutils
+from oslo_utils import excutils
+
+from venus import exception
+from venus import i18n
+from venus.i18n import _, _LE, _LI
+from venus.objects import base as objects_base
+import venus.policy
+from venus import utils
+from venus.wsgi import common as wsgi
 
 
 XML_NS_V1 = 'https://www.openstack.org/mediawiki/Venus/1.0/content'
