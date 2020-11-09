@@ -2,6 +2,8 @@
 VENUS
 ======
 
+# TODO(brinzhang): Description the readme for Venus project.
+
 You have come across a storage service for an open cloud computing service.
 It has identified itself as `Venus`. It was abstracted from the Cinder project.
 
