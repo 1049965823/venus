@@ -15,14 +15,15 @@
 """RequestContext: context for requests that persist through all of venus."""
 
 import copy
+import six
 
 from oslo_config import cfg
 from oslo_context import context
 from oslo_log import log as logging
 from oslo_utils import timeutils
-import six
 
 from venus.i18n import _, _LW
+
 from venus import policy
 
 context_opts = [

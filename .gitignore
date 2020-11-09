@@ -1,0 +1,9 @@
+*.pyc
+*.retry
+*.tox/
+.idea/
+.venv
+.stestr/
+
+venus.egg-info/
+venus/hacking/__pycache__/
