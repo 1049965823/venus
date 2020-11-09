@@ -15,15 +15,13 @@
 import datetime
 import json
 import time
-import timeutils
 
 from oslo_config import cfg
-
 from oslo_log import log as logging
-
-from venus.modules.search import es_template
+from oslo_utils import timeutils
 
 from venus.common import utils
+from venus.modules.search import es_template
 
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
@@ -73,7 +71,6 @@ class SearchCore(object):
         return index_names
 
     def get_index_names(self, index_prefix, start_time, end_time):
-        # 只获取时间的日期
         start_time, end_time = start_time.date(), end_time.date()
         exist_index_names = self.get_all_index(index_prefix)
         names = []
@@ -93,27 +90,27 @@ class SearchCore(object):
         diff = end_time - start_time
         per_diff = diff / 60
         if per_diff <= 1:
-            return "1s", "1秒".decode('utf-8'), "1second"
+            return "1s", "", "1second"
         elif per_diff <= 10:
-            return "10s", "10秒".decode('utf-8'), "10seconds"
+            return "10s", "10seconds", "10seconds"
         elif per_diff <= 30:
-            return "30s", "30秒".decode('utf-8'), "30seconds"
+            return "30s", "30seconds", "30seconds"
         elif per_diff <= 60:
-            return "1m", "1分钟".decode('utf-8'), "1minute"
+            return "1m", "1minute", "1minute"
         elif per_diff <= 600:
-            return "10m", "10分钟".decode('utf-8'), "10minutes"
+            return "10m", "10minutes", "10minutes"
         elif per_diff <= 1800:
-            return "30m", "30分钟".decode('utf-8'), "30minutes"
+            return "30m", "30minutes", "30minutes"
         elif per_diff <= 3600:
-            return "1h", "1小时".decode('utf-8'), "1hour"
+            return "1h", "1hour", "1hour"
         elif per_diff <= 14400:
-            return "3h", "3小时".decode('utf-8'), "3hours"
+            return "3h", "3hours", "3hours"
         elif per_diff <= 21600:
-            return "6h", "6小时".decode('utf-8'), "6hours"
+            return "6h", "6hours", "6hours"
         elif per_diff <= 43200:
-            return "12h", "12小时".decode('utf-8'), "12hours"
+            return "12h", "12hours", "12hours"
         else:
-            return "24h", "1天".decode('utf-8'), "1day"
+            return "24h", "1day", "1day"
 
     def params(self, type, module_name, index_type):
         field = ""
@@ -350,28 +347,28 @@ class SearchCore(object):
 
         if group_name == "host_name":
             g_name = "Hostname.keyword"
-            title_cn = "主机日志分析柱状图TOP5".decode('utf-8')
-            title_en = "Host Log Analysis Histogram"
+            title_cn = "Host Log Analysis Histogram TOP5".decode('utf-8')
+            title_en = "Host Log Analysis Histogram TOP5"
         elif group_name == "program_name":
             g_name = "programname.keyword"
-            title_cn = "组件日志分析柱状图TOP5".decode('utf-8')
-            title_en = "Program Log Analysis Histogram"
+            title_cn = "Program Log Analysis Histogram TOP5".decode('utf-8')
+            title_en = "Program Log Analysis Histogram TOP5"
         else:
             return {"code": -1, "msg": "invalid param"}
 
         if host_name:
             gen_params["Hostname.keyword"] = host_name
-            title_cn_params.append("主机=".decode('utf-8') + host_name)
+            title_cn_params.append("host=".decode('utf-8') + host_name)
             title_en_params.append("host=" + host_name)
 
         if module_name:
             gen_params["Logger.keyword"] = module_name
-            title_cn_params.append("模块=".decode('utf-8') + module_name)
+            title_cn_params.append("module=".decode('utf-8') + module_name)
             title_en_params.append("module=" + module_name)
 
         if program_name:
             gen_params["programname.keyword"] = program_name
-            title_cn_params.append("组件=".decode('utf-8') + program_name)
+            title_cn_params.append("program=".decode('utf-8') + program_name)
             title_en_params.append("program=" + program_name)
 
         if level:
@@ -379,7 +376,7 @@ class SearchCore(object):
                 gen_not_params["log_level.keyword"] = "log_level"
             else:
                 gen_params["log_level.keyword"] = level
-            title_cn_params.append("级别=".decode('utf-8') + level)
+            title_cn_params.append("level=".decode('utf-8') + level)
             title_en_params.append("level=" + level)
 
         if len(title_cn_params) > 0:
