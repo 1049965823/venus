@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+
 from datetime import datetime
 from elasticsearch import Elasticsearch
 import re
@@ -49,26 +50,17 @@ CONF.register_opts(elasticsearch_opts, elasticsearch_group)
 class ESSearchObj(object):
 
     def __init__(self):
-
         url = urlparse.urlparse(CONF.elasticsearch.url)
-        LOG.info(url)
-        LOG.info(url.hostname)
-        LOG.info(url.port)
-
         self.es = Elasticsearch([url.hostname],
                                 http_auth=(CONF.elasticsearch.username,
                                            CONF.elasticsearch.password),
                                 port=url.port)
 
     def get_all_index(self):
-
         indices = self.es.cat.indices(format="json")
-        for index in indices:
-            print(index)
         return indices
 
     def _create_index(self, index_name):
-
         all_index = self.get_all_index()
         exist = False
         for index in all_index:
@@ -104,7 +96,6 @@ class ESSearchObj(object):
         self.sort_result_by_time(log_list)
 
         data = {}
-        # data["log_list"] = log_list
         data["log_size"] = len(log_list)
         data["global_id"] = global_id
         data["analysis"] = self.analysis_log(log_list)
@@ -112,59 +103,50 @@ class ESSearchObj(object):
         return data
 
     def analysis_log(self, log_list):
-        # 1 group by model
-
         data = {}
         for log in log_list:
-            if log["Logger"] in data:
+            logger = log["Logger"]
+            if logger in data:
                 pass
             else:
-                data[log["Logger"]] = {}
+                data[logger] = {}
 
         for log in log_list:
-            if log["programname"] not in data[log["Logger"]]:
-                data[log["Logger"]][log["programname"]] = {}
-                # log content
-                data[log["Logger"]][log["programname"]]["log_list"] = []
-                data[log["Logger"]][log["programname"]]["log_list"].append(
-                    log)
-                # log host
-                data[log["Logger"]][log["programname"]]["host"] = []
+            programname = log["programname"]
+            logger = log["Logger"]
+            hostname = log["Hostname"]
+            loglevel = log["log_level"]
+            if programname not in data[logger]:
+                data[logger][programname] = {}
+                data[logger][programname]["log_list"] = []
+                data[logger][programname]["log_list"].append(log)
+                data[logger][programname]["host"] = []
 
-                if (log["Hostname"] not in
-                        data[log["Logger"]][log["programname"]]["host"]):
-                    data[log["Logger"]][log["programname"]][
-                        "host"].append(log["Hostname"])
+                if (hostname not in data[logger][programname]["host"]):
+                    data[logger][programname]["host"].append(hostname)
 
-                data[log["Logger"]][log["programname"]][
-                    "start_time"] = log["timeutc"]
-                data[log["Logger"]][log["programname"]][
-                    "end_time"] = log["timeutc"]
+                data[logger][programname]["start_time"] = log["timeutc"]
+                data[logger][programname]["end_time"] = log["timeutc"]
 
-                data[log["Logger"]][log["programname"]]["log_total"] = 1
-                data[log["Logger"]][log["programname"]]["log_error"] = 0
+                data[logger][programname]["log_total"] = 1
+                data[logger][programname]["log_error"] = 0
 
-                if self.get_log_level(log["log_level"]) > 0:
-                    data[log["Logger"]][log["programname"]]["log_error"] = 1
+                if self.get_log_level(loglevel) > 0:
+                    data[logger][programname]["log_error"] = 1
             else:
-                data[log["Logger"]][log["programname"]][
-                    "log_list"].append(log)
+                data[logger][programname]["log_list"].append(log)
 
-                if (log["Hostname"] not in
-                        data[log["Logger"]][log["programname"]]["host"]):
-                    data[log["Logger"]][log["programname"]][
-                        "host"].append(log["Hostname"])
+                if (hostname not in data[logger][programname]["host"]):
+                    data[logger][programname]["host"].append(hostname)
 
-                data[log["Logger"]][log["programname"]]["log_total"] = data[
-                    log["programname"]]["end_time"] = log["timeutc"]
+                data[logger][programname]["end_time"] = log["timeutc"]
 
-                data[log["Logger"]][log["programname"]]["log_total"] = data[
-                    log["Logger"]][log["programname"]]["log_total"] + 1
+                data[logger][programname][
+                    "log_total"] = data[logger][programname]["log_total"] + 1
 
-                if self.get_log_level(log["log_level"]) > 0:
-                    data[log["Logger"]][log["programname"]][
-                        "log_error"] = data[log["Logger"]][
-                            log["programname"]]["log_error"] + 1
+                if self.get_log_level(loglevel) > 0:
+                    data[logger][programname]["log_error"] = data[
+                        logger][programname]["log_error"] + 1
 
         return self.sort_deal_data(data)
 
