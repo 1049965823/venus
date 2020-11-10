@@ -24,7 +24,6 @@ from oslo_log import log as logging
 from venus.common import config  # noqa
 from venus import i18n
 from venus import objects
-from venus import rpc
 from venus import version
 from venus.wsgi import common as wsgi_common
 
@@ -39,7 +38,6 @@ def _application():
          version=version.version_string())
     logging.setup(CONF, "venus")
 
-    rpc.init(CONF)
     return wsgi_common.Loader().load_app(name='osapi_venus')
 
 

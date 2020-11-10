@@ -19,12 +19,10 @@ from oslo_utils import importutils
 import webob.dec
 import webob.exc
 
-import venus.api.openstack
 from venus.api.openstack import wsgi
 from venus.api import xmlutil
 from venus import exception
 from venus.i18n import _LE, _LI, _LW
-import venus.policy
 
 
 CONF = cfg.CONF
@@ -381,7 +379,7 @@ def extension_authorizer(api_name, extension_name):
             act = '%s_extension:%s' % (api_name, extension_name)
         else:
             act = '%s_extension:%s:%s' % (api_name, extension_name, action)
-        venus.policy.enforce(context, act, target)
+        #venus.policy.enforce(context, act, target)
     return authorize
 
 
