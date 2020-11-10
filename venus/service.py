@@ -34,7 +34,6 @@ from venus import context
 from venus import exception
 from venus.i18n import _, _LI, _LW
 from venus.objects import base as objects_base
-from venus import rpc
 from venus import version
 from venus.wsgi import common as wsgi_common
 from venus.wsgi import eventlet_server as wsgi
@@ -75,10 +74,6 @@ CONF.register_opts(profiler_opts, group="profiler")
 
 def setup_profiler(binary, host):
     if CONF.profiler.profiler_enabled:
-        _notifier = osprofiler.notifier.create(
-            "Messaging", messaging, context.get_admin_context().to_dict(),
-            rpc.TRANSPORT, "venus", binary, host)
-        osprofiler.notifier.set(_notifier)
         LOG.warning(
             _LW("OSProfiler is enabled.\nIt means that person who knows "
                 "any of hmac_keys that are specified in "
@@ -106,8 +101,7 @@ class Service(service.Service):
                  *args, **kwargs):
         super(Service, self).__init__()
 
-        if not rpc.initialized():
-            rpc.init(CONF)
+
 
         self.host = host
         self.binary = binary
@@ -139,8 +133,7 @@ class Service(service.Service):
         endpoints = [self.manager]
         endpoints.extend(self.manager.additional_endpoints)
         serializer = objects_base.VenusObjectSerializer()
-        self.rpcserver = rpc.get_server(target, endpoints, serializer)
-        self.rpcserver.start()
+
 
         self.manager.init_host_with_rpc()
 
@@ -356,7 +349,6 @@ def wait():
         _launcher.wait()
     except KeyboardInterrupt:
         _launcher.stop()
-    rpc.cleanup()
 
 
 class Launcher(object):

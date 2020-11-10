@@ -30,7 +30,6 @@ from venus import exception
 from venus import i18n
 from venus.i18n import _, _LE, _LI
 from venus.objects import base as objects_base
-import venus.policy
 from venus import utils
 from venus.wsgi import common as wsgi
 
@@ -78,7 +77,7 @@ def check_policy(context, action, target_obj=None):
     else:
         target.update(target_obj or {})
     _action = 'venus:%s' % action
-    venus.policy.enforce(context, _action, target)
+    #venus.policy.enforce(context, _action, target)
 
 
 class Request(webob.Request):

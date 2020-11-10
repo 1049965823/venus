@@ -24,8 +24,6 @@ from oslo_utils import timeutils
 
 from venus.i18n import _, _LW
 
-from venus import policy
-
 context_opts = [
     cfg.StrOpt('venus_internal_tenant_project_id',
                default=None,
@@ -98,13 +96,13 @@ class RequestContext(context.RequestContext):
             # if list is empty or none
             self.service_catalog = []
 
-        # We need to have RequestContext attributes defined
-        # when policy.check_is_admin invokes request logging
-        # to make it loggable.
-        if self.is_admin is None:
-            self.is_admin = policy.check_is_admin(self.roles, self)
-        elif self.is_admin and 'admin' not in self.roles:
-            self.roles.append('admin')
+        # # We need to have RequestContext attributes defined
+        # # when policy.check_is_admin invokes request logging
+        # # to make it loggable.
+        # if self.is_admin is None:
+        #     self.is_admin = policy.check_is_admin(self.roles, self)
+        # elif self.is_admin and 'admin' not in self.roles:
+        #     self.roles.append('admin')
 
     def _get_read_deleted(self):
         return self._read_deleted
